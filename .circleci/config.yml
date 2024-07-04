@@ -1,0 +1,60 @@
+php_environment: &php_environment
+  environment:
+    APP_ENV: testing
+    APP_KEY: base64:9GaUB3gTHKB/5l34tW1BPH/GHpolxJlXmI6kw86HV80=
+    APP_DOMAIN: 0.0.0.0
+    APP_PORT: 9000
+    CI_ENV: (true)
+
+version: 2
+jobs:
+  build-php:
+    docker:
+      - image: oliverlundquist/php83:8.3.2
+        <<: *php_environment
+    resource_class: arm.medium
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - composer-v2-{{ checksum "composer.lock" }}
+      - run: composer install -o -n --prefer-dist
+      - save_cache:
+          key: composer-v2-{{ checksum "composer.lock" }}
+          paths:
+            - vendor
+
+  phpunit:
+    docker:
+      - image: oliverlundquist/php83:8.3.2
+        <<: *php_environment
+    resource_class: arm.medium
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - composer-v2-{{ checksum "composer.lock" }}
+      - run: |
+          apt-get update && apt-get install -y chromium imagemagick
+          npm i puppeteer
+          touch database/database.sqlite
+          php artisan migrate:refresh --seed --env=testing
+      - run:
+          command: php artisan serve --host=0.0.0.0 --port=9000
+          background: true
+      - run: php vendor/phpunit/phpunit/phpunit
+      - store_artifacts:
+          path: storage/logs
+      - store_artifacts:
+          path: storage/images
+
+workflows:
+  version: 2
+  build_test_deploy:
+    jobs:
+      - build-php
+      # - build-node
+      - phpunit:
+          requires:
+            - build-php
+            # - build-node
