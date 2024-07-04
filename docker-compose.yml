@@ -1,0 +1,23 @@
+version: '2'
+services:
+  nginx:
+    image: oliverlundquist/nginx:1.25.4
+    ports:
+      - "80:80"
+    volumes:
+      - .:/var/app/current
+    networks:
+      - php-app
+  php:
+    image: oliverlundquist/php83-opcache-chromium:8.3.2
+    build: ./build/docker/php
+    platform: linux/arm64
+    environment:
+      VALIDATE_TIMESTAMPS: 1
+    volumes:
+      - .:/var/app/current
+    networks:
+      - php-app
+networks:
+  php-app:
+    driver: bridge

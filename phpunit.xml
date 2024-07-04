@@ -5,11 +5,11 @@
          colors="true"
 >
     <testsuites>
-        <testsuite name="Unit">
-            <directory>tests/Unit</directory>
+        <testsuite name="UI">
+            <directory>tests/UI</directory>
         </testsuite>
-        <testsuite name="Feature">
-            <directory>tests/Feature</directory>
+        <testsuite name="Features">
+            <directory>tests/Features</directory>
         </testsuite>
     </testsuites>
     <source>
@@ -27,7 +27,7 @@
         <env name="MAIL_MAILER" value="array"/>
         <env name="PULSE_ENABLED" value="false"/>
         <env name="QUEUE_CONNECTION" value="sync"/>
-        <env name="SESSION_DRIVER" value="array"/>
+        <env name="SESSION_DRIVER" value="database"/>
         <env name="TELESCOPE_ENABLED" value="false"/>
     </php>
 </phpunit>
