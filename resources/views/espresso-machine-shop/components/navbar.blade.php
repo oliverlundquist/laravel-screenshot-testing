@@ -8,7 +8,7 @@
                     <input type="hidden" name="_token" value="{{ session()->token() }}" />
                     <div class="navbar-item">
                         <img src="{{ $cartItem['image'] }}" />
-                        <div class="ml-3">{{ $cartItem['name'] }} x {{ $cartItem['qty'] }}</div>
+                        <div class="ml-3 has-text-danger">{{ $cartItem['name'] }} x {{ $cartItem['qty'] }}</div>
                         <button id="{{ 'delete-cart-item-' . $index }}" name="remove-product-id" value="{{ $index }}" class="delete is-primary ml-3"></button>
                     </div>
                 </form>
